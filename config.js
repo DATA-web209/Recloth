@@ -6,6 +6,6 @@
      OpenAI 등의 API 키는 여기에 넣지 마세요! Vercel 환경변수에만 넣어요.
    - DATA_SOURCE: 수거함 위치 데이터의 출처를 적어요. 지도 아래에 표시돼요.
    ========================================================= */
-const KAKAO_KEY = "YOUR_KAKAO_MAP_API_KEY";
+const KAKAO_KEY = "f0f616bdd7756c7337aed4396230c189";
 const AI_ENDPOINT = "/api/ask";
 const DATA_SOURCE="(데이터 출처를 여기에 적어 주세요. 예: 공공데이터포털 ○○시 의류수거함 위치 데이터)";
