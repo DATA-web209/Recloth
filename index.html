@@ -103,6 +103,10 @@ label{display:block;font-weight:700;margin:14px 0 4px}
 @media(max-width:600px){.cards{grid-template-columns:1fr}.card{display:flex;align-items:center;gap:14px;text-align:left;padding:16px}.card b{margin:0}.grid2{grid-template-columns:1fr}.btn{padding:9px 12px;font-size:14px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .mapbar{display:flex;gap:8px;flex-wrap:wrap}.mapbar input[type=text]{flex:1;min-width:160px;border:2px solid var(--line);border-radius:10px;padding:11px 14px}.row2{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px}#map{height:420px}
+.wide{width:100%;display:flex;align-items:center;gap:14px;text-align:left;padding:18px 22px;margin:-8px 0 26px;font:inherit}.wide .ic{font-size:30px}.wide b{margin:0;display:block}
+.vcard{display:flex;justify-content:space-between;align-items:center;gap:12px;text-decoration:none;color:var(--txt);background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:10px;transition:transform .2s,box-shadow .2s,border-color .2s}
+.vcard:hover{transform:translateY(-2px);border-color:var(--g500);box-shadow:0 8px 20px rgba(35,122,75,.12)}
+.vcard b{font-size:18px}.vtag{display:inline-block;background:var(--g100);color:var(--g700);border-radius:99px;padding:1px 10px;font-size:13px;font-weight:700;margin:6px 6px 0 0}.vgo{color:var(--g700);font-weight:700;white-space:nowrap}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
@@ -139,6 +143,7 @@ label{display:block;font-weight:700;margin:14px 0 4px}
     <button class="card" data-go="map"><span class="ic">🗺️</span><span><b>수거함 찾기</b><small>전국 수거함 지도</small></span></button>
     <button class="card" data-go="quiz"><span class="ic">🧩</span><span><b>상식 퀴즈</b><small>3문제로 확인하기</small></span></button>
   </nav>
+  <button class="card wide" data-go="vendors"><span class="ic">🚚</span><span><b>지역 수거 업체 확인하기</b><small>방문 수거 업체 사이트로 바로 이동</small></span></button>
   <p class="foot">수거 기준은 지역과 수거업체마다 달라요. 수거함 안내문과 관할 구청 안내를 함께 확인하세요.</p>
 </div>
 
@@ -237,6 +242,14 @@ label{display:block;font-weight:700;margin:14px 0 4px}
   <p class="note" id="srcNote"></p>
 </div></div>
 
+<!-- ============ 지역 수거 업체 ============ -->
+<div class="view wrap" id="v-vendors" hidden><div class="page">
+  <div class="subbar"><button class="back" data-back aria-label="처음 화면으로 돌아가기">←</button><h2>🚚 지역 수거 업체</h2></div>
+  <p class="note" style="margin-top:0">업체를 누르면 해당 업체 사이트(또는 앱 소개 페이지)가 새 창으로 열려요.</p>
+  <div id="vList"></div>
+  <p class="note">수거 가능 지역, 품목, 가격은 업체마다 달라요. 신청 전에 업체 사이트에서 꼭 확인하세요. 정보는 바뀔 수 있어요.</p>
+</div></div>
+
 <!-- ============ 퀴즈 ============ -->
 <div class="view wrap" id="v-quiz" hidden><div class="page">
   <div class="subbar"><button class="back" data-back aria-label="처음 화면으로 돌아가기">←</button><h2>🧩 의류 수거 상식 퀴즈</h2></div>
@@ -265,7 +278,7 @@ const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAl
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),1800)}
 
 /* ---------- 라우팅: 블록을 누르면 별도 화면으로, ← 로 복귀 ---------- */
-const VIEWS=["guide","map","quiz","profile"];
+const VIEWS=["guide","map","quiz","profile","vendors"];
 function route(){const h=location.hash.slice(1),v=VIEWS.includes(h)?h:"home";
   $$(".view").forEach(e=>e.hidden=e.id!=="v-"+v);window.scrollTo(0,0);
   if(v==="map")initMap();if(v==="quiz")quizIntro();if(v==="profile")fillForm()}
@@ -429,6 +442,9 @@ function finish(){const msg=["괜찮아요! 가이드를 다시 읽고 도전해
   <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px"><button class="btn" id="rt">새 문제로 다시 풀기</button><button class="btn line" data-go="guide">가이드 보기</button></div></div>`;
   $("#rt").onclick=startQuiz}
 
+function renderVendors(){
+  $("#vList").innerHTML=VENDORS.map(v=>`<a class="vcard" href="${esc(v.url)}" target="_blank" rel="noopener noreferrer"><div><b>${esc(v.n)}</b> <span class="vtag" style="background:var(--gray);color:var(--mute)">${esc(v.how)}</span><br>${v.tags.map(t=>`<span class="vtag">${esc(t)}</span>`).join("")}</div><span class="vgo">바로가기 ↗</span></a>`).join("")}
+renderVendors();
 route();
 </script>
 </body>
